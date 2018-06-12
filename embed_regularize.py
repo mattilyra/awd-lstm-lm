@@ -2,6 +2,8 @@ import numpy as np
 
 import torch
 from torch.autograd import Variable
+import torch.nn.functional as F
+
 
 def embedded_dropout(embed, words, dropout=0.1, scale=None):
   if dropout:
@@ -16,10 +18,18 @@ def embedded_dropout(embed, words, dropout=0.1, scale=None):
   padding_idx = embed.padding_idx
   if padding_idx is None:
       padding_idx = -1
-  X = embed._backend.Embedding.apply(words, masked_embed_weight,
-    padding_idx, embed.max_norm, embed.norm_type,
-    embed.scale_grad_by_freq, embed.sparse
+  #X = embed._backend.Embedding.apply(words, masked_embed_weight,
+  #  padding_idx, embed.max_norm, embed.norm_type,
+  #  embed.scale_grad_by_freq, embed.sparse
+  #)
+
+  X = F.embedding(
+          words, masked_embed_weight,
+          padding_idx,
+          embed.max_norm, embed.norm_type,
+          embed.scale_grad_by_freq, embed.sparse
   )
+
   return X
 
 if __name__ == '__main__':

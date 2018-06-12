@@ -1,11 +1,22 @@
 from torch.autograd import Variable
+import torch
 
-def repackage_hidden(h):
+
+def repackage_hidden_03(h):
+    """Wraps hidden states in new Variables, to detach them from their history."""
+    if isinstance(h, torch.Tensor):
+        return h.detach()
+    else:
+        return tuple(repackage_hidden(v) for v in h)
+
+
+def repackage_hidden_03(h):
     """Wraps hidden states in new Variables, to detach them from their history."""
     if type(h) == Variable:
         return Variable(h.data)
     else:
         return tuple(repackage_hidden(v) for v in h)
+
 
 def batchify(data, bsz, args):
     # Work out how cleanly we can divide the dataset into bsz parts.
@@ -17,6 +28,7 @@ def batchify(data, bsz, args):
     if args.cuda:
         data = data.cuda()
     return data
+
 
 def get_batch(source, i, args, seq_len=None, evaluation=False):
     seq_len = min(seq_len if seq_len else args.bptt, len(source) - 1 - i)
