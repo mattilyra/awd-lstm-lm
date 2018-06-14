@@ -2,7 +2,7 @@ from torch.autograd import Variable
 import torch
 
 
-def repackage_hidden_03(h):
+def repackage_hidden(h):
     """Wraps hidden states in new Variables, to detach them from their history."""
     if isinstance(h, torch.Tensor):
         return h.detach()
